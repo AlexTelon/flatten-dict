@@ -88,6 +88,12 @@ def flatten(d, reducer='tuple', inverse=False, enumerate_types=(), keep_empty_ty
     _flatten(d)
     return flat_dict
 
+def is_number(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
 
 def nested_set_dict(d, keys, value):
     """Set a value to a sequence of nested keys
@@ -108,16 +114,17 @@ def nested_set_dict(d, keys, value):
         return
 
     # the type is a string so make a dict if none exists
-    if type(keys[1]) == int:
+    if is_number(keys[1]):
         if key in d:
             pass
         else:
             d[key] = []
         d = d[key]
-    elif type(key)==int:
-        if (key+1) > len(d):
+    elif is_number(key):
+        num = int(key)
+        if (num+1) > len(d):
             d.append({})
-        d = d[key]
+        d = d[num]
     else:
         d = d.setdefault(key, {})
     nested_set_dict(d, keys[1:], value)
